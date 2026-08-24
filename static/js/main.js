@@ -1,0 +1,1 @@
+console.log("Visor de simulaciones おｋ");

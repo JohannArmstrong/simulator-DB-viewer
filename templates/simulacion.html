@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Simulación {{ simulacion["id"] }}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <main class="container">
+
+        <a href="{{ url_for('index') }}">
+            ← Volver
+        </a>
+
+        <h1>
+            Simulación #{{ simulacion["id"] }}
+        </h1>
+
+        <section class="datos">
+
+            <p>
+                <strong>Escenario:</strong>
+                {{ simulacion["nivel"] }}
+            </p>
+
+            <p>
+                <strong>Fecha:</strong>
+                {{ simulacion["fecha"] }}
+            </p>
+
+            <p>
+                <strong>Muestras por segundo:</strong>
+                {{ simulacion["muestras_por_segundo"] }}
+            </p>
+
+            <p>
+                <strong>Límite de velocidad:</strong>
+                {{ simulacion["limite_velocidad"] }}
+            </p>
+
+            <p>
+                <strong>Velocidad máxima:</strong>
+                {{ simulacion["velocidad_maxima"] }}
+            </p>
+
+            <p>
+                <strong>Tiempo sobre velocidad máxima:</strong>
+                {{ simulacion["tiempo_sobre_velocidad"] }}
+            </p>
+
+            <p>
+                <strong>Choques totales:</strong>
+                {{ simulacion["choques_total"] }}
+            </p>
+
+        </section>
+
+        <section>
+
+            <h2>Gráficas</h2>
+
+            <p>
+                Nothing here...
+            </p>
+
+        </section>
+
+    </main>
+
+    <script src="{{ url_for('static', filename='js/simulacion.js') }}"></script>
+
+</body>
+
+</html>
