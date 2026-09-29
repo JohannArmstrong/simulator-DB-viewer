@@ -1,93 +1,37 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Visor de simulaciones</title>
-
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-
 <body>
-
     <main class="container">
-
         <h1>Simulaciones</h1>
 
-        {% if simulaciones %}
-
-            <table>
-
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Escenario</th>
-                        <th>Fecha</th>
-                        <th>Velocidad máxima</th>
-                        <th>Tiempo sobre límite</th>
-                        <th></th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    {% for simulacion in simulaciones %}
-
-                        <tr>
-
-                            <td>
-                                {{ simulacion["id"] }}
-                            </td>
-
-                            <td>
-                                {{ simulacion["nivel"] }}
-                            </td>
-
-                            <td>
-                                {{ simulacion["fecha"] }}
-                            </td>
-
-                            <td>
-                                {{ simulacion["velocidad_maxima"] }}
-                            </td>
-
-                            <td>
-                                {{ simulacion["tiempo_sobre_velocidad"] }}
-                            </td>
-
-                            <td>
-                                <a
-                                    href="{{ url_for(
-                                        'ver_simulacion',
-                                        simulacion_id=simulacion['id']
-                                    ) }}"
-                                >
-                                    Ver
-                                </a>
-                            </td>
-
-                        </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        {% else %}
-
-            <p>
-                No hay simulaciones almacenadas.
-            </p>
-
-        {% endif %}
-
+        <table id="tablaSimulaciones" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Escenario</th>
+                    <th>Fecha</th>
+                    <th>Sexo</th>
+                    <th>Exposición</th>
+                    <th>Velocidad máxima</th>
+                    <th>Tiempo sobre límite</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
     </main>
 
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
 </body>
-
 </html>
