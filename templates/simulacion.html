@@ -8,11 +8,13 @@
     <title>Simulación {{ simulacion["id"] }}</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-    <main class="container">
+    <main class="container" data-simulacion-id="{{ simulacion['id'] }}" data-nivel="{{ simulacion['nivel'] }}">
 
         <a href="{{ url_for('index') }}">
             ← Volver
@@ -24,40 +26,20 @@
 
         <section class="datos">
 
-            <p>
-                <strong>Escenario:</strong>
-                {{ simulacion["nivel"] }}
-            </p>
-
-            <p>
-                <strong>Fecha:</strong>
-                {{ simulacion["fecha"] }}
-            </p>
-
-            <p>
-                <strong>Muestras por segundo:</strong>
-                {{ simulacion["muestras_por_segundo"] }}
-            </p>
-
-            <p>
-                <strong>Límite de velocidad:</strong>
-                {{ simulacion["limite_velocidad"] }}
-            </p>
-
-            <p>
-                <strong>Velocidad máxima:</strong>
-                {{ simulacion["velocidad_maxima"] }}
-            </p>
-
-            <p>
-                <strong>Tiempo sobre velocidad máxima:</strong>
-                {{ simulacion["tiempo_sobre_velocidad"] }}
-            </p>
-
-            <p>
-                <strong>Choques totales:</strong>
-                {{ simulacion["choques_total"] }}
-            </p>
+            <p><strong>Escenario:</strong> {{ simulacion["nivel"] }}</p>
+            <p><strong>Fecha:</strong> {{ simulacion["fecha"] }}</p>
+            <p><strong>Edad:</strong> {{ simulacion["edad"] if simulacion["edad"] is not none else "N/A" }}</p>
+            <p><strong>Sexo:</strong> {{ simulacion["sexo_nombre"] or "N/A" }}</p>
+            <p><strong>Exposición:</strong> {{ simulacion["exposicion_nombre"] or "N/A" }}</p>
+            <p><strong>Modo de transmisión:</strong> {{ simulacion["modo_transmision"] }}</p>
+            <p><strong>Muestras por segundo:</strong> <span id="datoMuestrasPorSegundo">...</span></p>
+            <p><strong>Velocidad máxima:</strong> {{ "%.2f"|format(simulacion["vel_max"] or 0) }} km/h</p>
+            <p><strong>Tiempo sobre velocidad máxima:</strong> {{ "%.2f"|format(simulacion["tiempo_vel_max"] or 0) }} s</p>
+            <p><strong>Choques con autos:</strong> {{ simulacion["choques_autos"] or 0 }}</p>
+            <p><strong>Choques con peatones:</strong> {{ simulacion["choques_peatones"] or 0 }}</p>
+            <p><strong>Choques con objetos:</strong> {{ simulacion["choques_objetos"] or 0 }}</p>
+            <p><strong>Choques totales:</strong> {{ (simulacion["choques_autos"] or 0) + (simulacion["choques_peatones"] or 0) + (simulacion["choques_objetos"] or 0) }}</p>
+            <p><strong>Semáforos en rojo:</strong> {{ simulacion["semaforos_rojo"] or 0 }}</p>
 
         </section>
 
@@ -65,14 +47,19 @@
 
             <h2>Gráficas</h2>
 
-            <p>
-                Nothing here...
-            </p>
+            <div class="graficas-container">
+                <div style="height: 400px; width: 100%; margin-bottom: 50px;">
+                    <canvas id="graficaVelocidad"></canvas>
+                </div>
+                <div style="height: 400px; width: 100%; margin-bottom: 50px;">
+                    <canvas id="graficaDesviacion"></canvas>
+                </div>
+            </div>
 
         </section>
 
     </main>
-
+    
     <script src="{{ url_for('static', filename='js/simulacion.js') }}"></script>
 
 </body>
