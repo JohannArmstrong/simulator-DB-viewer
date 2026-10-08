@@ -8,10 +8,13 @@ from database import (
 )
 
 import struct
+import math
 import io
 
 app = Flask(__name__)
 
+def limpiar(valor):
+    return None if math.isnan(valor) else valor
 
 @app.route("/")
 def index():
@@ -103,10 +106,10 @@ def api_simulacion_datos(simulacion_id):
         idx = 0
         for _ in range(cantidad_muestras):
             muestras.append({
-                "ebriedad": datos_crudos[idx],
-                "velocidad": datos_crudos[idx + 1],
-                "tiempo": datos_crudos[idx + 2],
-                "desviacion": datos_crudos[idx + 3]
+                "ebriedad": limpiar(datos_crudos[idx]),
+                "velocidad": limpiar(datos_crudos[idx + 1]),
+                "tiempo": limpiar(datos_crudos[idx + 2]),
+                "desviacion": limpiar(datos_crudos[idx + 3])
             })
             idx += cantidad_variables
 

@@ -99,8 +99,9 @@ function procesarDatos(muestras) {
 
 function dibujarGraficaVelocidad(labels, velocidad, ebriedad, velMaxima) {
     const ctx = document.getElementById('graficaVelocidad').getContext('2d');
-    
-    const limiteArray = new Array(labels.length).fill(LIMITE_VELOCIDAD); // null = sin línea
+    const limiteArray = new Array(labels.length).fill(LIMITE_VELOCIDAD);
+    const maxDatos = Math.max(...velocidad, LIMITE_VELOCIDAD ?? 0);
+    const maxY = Math.max(90, Math.ceil((maxDatos * 1.1) / 10) * 10);
 
     new Chart(ctx, {
         type: 'line',
@@ -151,7 +152,7 @@ function dibujarGraficaVelocidad(labels, velocidad, ebriedad, velMaxima) {
             },
             scales: {
                 x: { title: { display: true, text: 'Tiempo (s)' } },
-                y: { min: 0, max: 90 }
+                y: { min: 0, max: maxY }
             }
         }
     });
