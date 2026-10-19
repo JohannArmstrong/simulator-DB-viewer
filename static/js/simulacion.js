@@ -5,8 +5,6 @@ const MAX_PUNTOS_GRAFICA = 500;
 const DATOS_PAGINA = document.querySelector("main").dataset;
 const SIMULACION_ID = Number(DATOS_PAGINA.simulacionId);
 
-// El límite de velocidad no se guarda en la base de datos.
-// Completa aquí el límite (km/h) de cada nivel/escenario.
 const LIMITES_POR_NIVEL = {
     // "Default": 50,
 };
@@ -161,7 +159,6 @@ function dibujarGraficaVelocidad(labels, velocidad, ebriedad, velMaxima) {
 function dibujarGraficaDesviacion(labels, desviacion, maxAbsDesviacion) {
     const ctx = document.getElementById('graficaDesviacion').getContext('2d');
     
-    // Array para la línea del centro del carril
     const centroArray = new Array(labels.length).fill(0);
     
     const rangoY = Math.max(maxAbsDesviacion * 1.1, 1.0);

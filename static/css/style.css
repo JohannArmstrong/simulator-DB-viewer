@@ -50,3 +50,82 @@ a:hover {
     margin-top: 25px;
     margin-bottom: 40px;
 }
+
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.filtros input[type="date"],
+.filtros select,
+.filtros button {
+    padding: 6px 10px;
+    margin-left: 5px;
+    border-radius: 4px;
+    border: 1px solid #555;
+    background: #222;
+    color: white;
+    color-scheme: dark;
+}
+
+.filtros button {
+    margin-left: 0;
+    cursor: pointer;
+}
+
+#seccionPromedio {
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid #444;
+}
+
+.filtros select {
+    width: auto;
+    min-width: 170px;
+    padding-right: 30px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+#seccionEnlaces {
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid #444;
+}
+
+.form-enlace {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.form-enlace input[type="url"] {
+    flex: 1;
+    min-width: 260px;
+    padding: 8px 10px;
+    border-radius: 4px;
+    border: 1px solid #555;
+    background: #222;
+    color: white;
+}
+
+.form-enlace button {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid #555;
+    background: #222;
+    color: white;
+    cursor: pointer;
+}
+
+.enlace-fecha {
+    color: #999;
+    font-size: 0.85em;
+}
+
+#enlaceActual a {
+    word-break: break-all;
+}

@@ -11,6 +11,17 @@
     <main class="container">
         <h1>Simulaciones</h1>
 
+        <div class="filtros">
+            <label>Desde <input type="date" id="fechaDesde"></label>
+            <label>Hasta <input type="date" id="fechaHasta"></label>
+            <label>Transmisión
+                <select id="filtroTransmision">
+                    <option value="">Todas</option>
+                </select>
+            </label>
+            <button type="button" id="btnLimpiarFechas">Limpiar filtros</button>
+        </div>
+
         <table id="tablaSimulaciones" class="display" style="width:100%">
             <thead>
                 <tr>
@@ -27,11 +38,43 @@
             <tbody>
             </tbody>
         </table>
+
+        <section id="seccionPromedio">
+
+            <h1>Promedio de las simulaciones filtradas</h1>
+            <p id="promedioEstado"></p>
+
+            <section class="datos">
+                <p><strong>Rango de fechas:</strong> <span id="promRango">...</span></p>
+                <p><strong>Transmisión:</strong> <span id="promTransmision">...</span></p>
+                <p><strong>Edad promedio:</strong> <span id="promEdad">...</span></p>
+                <p><strong>Velocidad máxima promedio:</strong> <span id="promVelMax">...</span> km/h</p>
+                <p><strong>Tiempo sobre velocidad máxima promedio:</strong> <span id="promTiempoVelMax">...</span> s</p>
+                <p><strong>Choques con autos (promedio):</strong> <span id="promChoquesAutos">...</span></p>
+                <p><strong>Choques con peatones (promedio):</strong> <span id="promChoquesPeatones">...</span></p>
+                <p><strong>Choques con objetos (promedio):</strong> <span id="promChoquesObjetos">...</span></p>
+                <p><strong>Choques totales (promedio):</strong> <span id="promChoquesTotales">...</span></p>
+                <p><strong>Semáforos en rojo (promedio):</strong> <span id="promSemaforos">...</span></p>
+            </section>
+
+        </section>
+
+        <section id="seccionEnlaces">
+            <h1>Enlace</h1>
+
+            <form id="formEnlace" class="form-enlace">
+                <input type="url" id="inputEnlace" required>
+                <button type="submit">Guardar enlace</button>
+            </form>
+            <p id="enlaceEstado"></p>
+
+            <p><strong>Enlace actual:</strong> <span id="enlaceActual">...</span></p>
+        </section>
     </main>
 
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    
+
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

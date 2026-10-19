@@ -1,10 +1,16 @@
+from urllib.parse import urlparse
+
 from flask import Flask, render_template, abort, request, jsonify
 
 from database import (
     get_connection,
     obtener_simulaciones,
     obtener_simulacion,
-    obtener_simulaciones_datatables
+    obtener_simulaciones_datatables,
+    obtener_promedios,
+    obtener_modos_transmision,
+    obtener_enlace,
+    guardar_enlace
 )
 
 import struct
@@ -28,12 +34,16 @@ def api_simulaciones():
         start = request.args.get('start', type=int)
         length = request.args.get('length', type=int)
         search_value = request.args.get('search[value]', type=str)
+        fecha_desde = request.args.get('fecha_desde', type=str) or None
+        fecha_hasta = request.args.get('fecha_hasta', type=str) or None
+        modo_transmision = request.args.get('modo_transmision', type=str) or None
 
         order_column_index = request.args.get('order[0][column]', type=int, default=0)
         order_dir = request.args.get('order[0][dir]', type=str, default='desc')
 
         records_total, records_filtered, data = obtener_simulaciones_datatables(
-            start, length, search_value, order_column_index, order_dir
+            start, length, search_value, order_column_index, order_dir,
+            fecha_desde, fecha_hasta, modo_transmision
         )
 
         return jsonify({
@@ -46,6 +56,74 @@ def api_simulaciones():
         print("Error en Datatables")
         print(e)
         return jsonify({"error": f"Error interno: {str(e)}"}), 500
+
+
+@app.route("/api/modos_transmision")
+def api_modos_transmision():
+    try:
+        return jsonify(obtener_modos_transmision())
+    except Exception as e:
+        print("Error al obtener modos de transmisión")
+        print(e)
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/promedios")
+def api_promedios():
+    """Promedios de las simulaciones que cumplen el mismo filtro que la tabla."""
+    try:
+        search_value = request.args.get('search', type=str) or None
+        fecha_desde = request.args.get('fecha_desde', type=str) or None
+        fecha_hasta = request.args.get('fecha_hasta', type=str) or None
+        modo_transmision = request.args.get('modo_transmision', type=str) or None
+
+        promedios = obtener_promedios(search_value, fecha_desde, fecha_hasta, modo_transmision)
+
+        return jsonify({
+            "cantidad": promedios.pop("cantidad"),
+            "promedios": promedios
+        })
+    except Exception as e:
+        print("Error al calcular promedios")
+        print(e)
+        return jsonify({"error": str(e)}), 500
+
+
+def _url_valida(url):
+    """Solo se aceptan enlaces http/https."""
+    if not url or len(url) > 2048:
+        return False
+    try:
+        partes = urlparse(url)
+    except ValueError:
+        return False
+    return partes.scheme in ("http", "https") and bool(partes.netloc)
+
+
+@app.route("/api/enlace", methods=["GET"])
+def api_enlace_obtener():
+    try:
+        return jsonify(obtener_enlace())
+    except Exception as e:
+        print("Error al obtener el enlace")
+        print(e)
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/enlace", methods=["PUT"])
+def api_enlace_guardar():
+    datos = request.get_json(silent=True) or {}
+    url = (datos.get("url") or "").strip()
+
+    if not _url_valida(url):
+        return jsonify({"error": "Ingresá un enlace válido que empiece con http:// o https://"}), 400
+
+    try:
+        return jsonify(guardar_enlace(url))
+    except Exception as e:
+        print("Error al guardar el enlace")
+        print(e)
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/simulacion/<int:simulacion_id>")
