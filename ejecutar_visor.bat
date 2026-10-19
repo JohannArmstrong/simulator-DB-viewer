@@ -7,6 +7,7 @@ cd /d "%~dp0"
 where py >nul 2>&1
 if errorlevel 1 (
     echo [ERROR] No se encontro el comando "py". Instala Python desde python.org.
+    start "" "https://www.python.org/downloads/"
     pause
     exit /b 1
 )
