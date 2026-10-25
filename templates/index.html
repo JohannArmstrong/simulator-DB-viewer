@@ -70,6 +70,21 @@
 
             <p><strong>Enlace actual:</strong> <span id="enlaceActual">...</span></p>
         </section>
+
+        <section id="seccionBaseDatos">
+            <h1>Base de datos</h1>
+
+            <div class="acciones-bd">
+                <a id="btnExportar" class="boton" href="/api/base_datos/exportar" download>Exportar base de datos</a>
+
+                <form id="formImportar" class="form-importar">
+                    <input type="file" id="inputImportar" accept=".db,.sqlite,.sqlite3" required>
+                    <button type="submit" id="btnImportar">Importar base de datos</button>
+                </form>
+            </div>
+            <p class="aviso">Al importar, la base de datos actual se reemplaza por el archivo elegido. Asegurate de subir una base válida del simulador.</p>
+            <p id="baseDatosEstado"></p>
+        </section>
     </main>
 
     <script src="{{ url_for('static', filename='vendor/jquery/jquery-3.7.0.min.js') }}"></script>

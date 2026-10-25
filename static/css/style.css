@@ -129,3 +129,50 @@ a:hover {
 #enlaceActual a {
     word-break: break-all;
 }
+
+#seccionBaseDatos {
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid #444;
+}
+
+.acciones-bd {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+}
+
+.boton,
+.form-importar button {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid #555;
+    background: #222;
+    color: white;
+    font-size: 13.33px;
+    cursor: pointer;
+}
+
+.boton:hover {
+    text-decoration: none;
+    background: #2e2e2e;
+}
+
+.form-importar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.form-importar button:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+.aviso {
+    color: #999;
+    font-size: 0.85em;
+}

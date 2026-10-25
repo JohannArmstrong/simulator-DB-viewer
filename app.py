@@ -1,6 +1,10 @@
+import os
+import shutil
+import tempfile
+from datetime import datetime
 from urllib.parse import urlparse
 
-from flask import Flask, render_template, abort, request, jsonify
+from flask import Flask, render_template, abort, request, jsonify, Response
 
 from database import (
     get_connection,
@@ -10,7 +14,9 @@ from database import (
     obtener_promedios,
     obtener_modos_transmision,
     obtener_enlace,
-    guardar_enlace
+    guardar_enlace,
+    exportar_base_datos,
+    DATABASE_PATH
 )
 
 import struct
@@ -18,6 +24,7 @@ import math
 import io
 
 app = Flask(__name__)
+app.config["MAX_CONTENT_LENGTH"] = 1024 * 1024 * 1024  # 1 GB: las bases con datos binarios pueden ser grandes
 
 def limpiar(valor):
     return None if math.isnan(valor) else valor
@@ -126,6 +133,62 @@ def api_enlace_guardar():
         return jsonify({"error": str(e)}), 500
 
 
+def _enviar_y_borrar(ruta, carpeta):
+    """Envía el archivo por partes y borra la carpeta temporal al terminar."""
+    try:
+        with open(ruta, "rb") as f:
+            while True:
+                bloque = f.read(64 * 1024)
+                if not bloque:
+                    break
+                yield bloque
+    finally:
+        shutil.rmtree(carpeta, ignore_errors=True)
+
+
+@app.route("/api/base_datos/exportar")
+def api_base_datos_exportar():
+    """Descarga una copia de la base de datos."""
+    carpeta = tempfile.mkdtemp(prefix="export_simulaciones_")
+    try:
+        destino = os.path.join(carpeta, "simulaciones.db")
+        exportar_base_datos(destino)
+        nombre = f"simulaciones_{datetime.now():%Y%m%d_%H%M%S}.db"
+        tamano = os.path.getsize(destino)
+    except Exception as e:
+        shutil.rmtree(carpeta, ignore_errors=True)
+        print("Error al exportar la base de datos")
+        print(e)
+        return jsonify({"error": str(e)}), 500
+
+    return Response(
+        _enviar_y_borrar(destino, carpeta),
+        mimetype="application/octet-stream",
+        headers={
+            "Content-Disposition": f'attachment; filename="{nombre}"',
+            "Content-Length": str(tamano)
+        }
+    )
+
+
+@app.route("/api/base_datos/importar", methods=["POST"])
+def api_base_datos_importar():
+    """Reemplaza la base de datos por el archivo subido."""
+    archivo = request.files.get("archivo")
+    if archivo is None or not archivo.filename:
+        return jsonify({"error": "Seleccioná un archivo de base de datos."}), 400
+
+    try:
+        temporal = str(DATABASE_PATH) + ".nueva"
+        archivo.save(temporal)
+        os.replace(temporal, DATABASE_PATH)
+        return jsonify({"ok": True})
+    except Exception as e:
+        print("Error al importar la base de datos")
+        print(e)
+        return jsonify({"error": f"No se pudo importar: {e}"}), 500
+
+
 @app.route("/simulacion/<int:simulacion_id>")
 def ver_simulacion(simulacion_id):
     simulacion = obtener_simulacion(simulacion_id)
@@ -198,7 +261,7 @@ def api_simulacion_datos(simulacion_id):
         })
 
     except Exception as e:
-        print("======== ERROR AL DECODIFICAR BLOB ========")
+        print("Error al decodificar blob")
         print(e)
         return jsonify({"error": str(e)}), 500
 

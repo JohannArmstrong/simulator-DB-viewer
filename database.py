@@ -62,6 +62,25 @@ def guardar_enlace(url):
         connection.close()
 
 
+def _copiar_base(origen, destino):
+    """
+    Copia una base SQLite a otra usando la API de backup de SQLite
+    (consistente aunque haya otras conexiones abiertas).
+    """
+    try:
+        origen.backup(destino)
+    finally:
+        destino.close()
+        origen.close()
+
+
+def exportar_base_datos(ruta_destino):
+    """
+    Genera una copia consistente de la base actual en `ruta_destino`.
+    """
+    _copiar_base(get_connection(), sqlite3.connect(ruta_destino))
+
+
 def obtener_simulaciones():
     """
     Obtiene todas las simulaciones almacenadas (Sin DataTables).

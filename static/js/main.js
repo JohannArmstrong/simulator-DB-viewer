@@ -222,3 +222,52 @@ $(document).ready(function () {
 
     cargarEnlace();
 });
+
+
+function mostrarEstadoBaseDatos(texto, esError) {
+    const el = document.getElementById('baseDatosEstado');
+    if (!el) return;
+    el.textContent = texto;
+    el.style.color = esError ? '#ff6b6b' : '#6bdc7a';
+}
+
+async function importarBaseDatos(archivo) {
+    const boton = document.getElementById('btnImportar');
+    const datos = new FormData();
+    datos.append('archivo', archivo);
+
+    boton.disabled = true;
+    mostrarEstadoBaseDatos('Importando base de datos...', false);
+
+    try {
+        const respuesta = await fetch('/api/base_datos/importar', { method: 'POST', body: datos });
+        const data = await respuesta.json();
+
+        if (!respuesta.ok) {
+            mostrarEstadoBaseDatos(data.error || 'No se pudo importar la base de datos.', true);
+            boton.disabled = false;
+            return;
+        }
+
+        mostrarEstadoBaseDatos(`Base de datos importada. Recargando...`, false);
+        setTimeout(() => location.reload(), 2000);
+    } catch (error) {
+        console.error('Error al importar la base de datos:', error);
+        mostrarEstadoBaseDatos('No se pudo importar la base de datos.', true);
+        boton.disabled = false;
+    }
+}
+
+$(document).ready(function () {
+    const form = document.getElementById('formImportar');
+    if (!form) return;
+
+    form.addEventListener('submit', function (evento) {
+        evento.preventDefault();
+        const archivo = document.getElementById('inputImportar').files[0];
+        if (!archivo) return;
+
+        if (!confirm('Esto reemplaza TODA la base de datos actual por "' + archivo.name + '". ¿Continuar?')) return;
+        importarBaseDatos(archivo);
+    });
+});
