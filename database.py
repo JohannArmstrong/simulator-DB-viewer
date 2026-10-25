@@ -1,9 +1,10 @@
 import sqlite3
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-DATABASE_PATH = BASE_DIR / "simulador-conduccion-vr-2026" / "Database" / "simulaciones.db" 
+#BASE_DIR = Path(__file__).resolve().parent.parent
+#DATABASE_PATH = BASE_DIR / "simulador-conduccion-vr-2026" / "Database" / "simulaciones.db" 
 
+DATABASE_PATH = (Path.home() / "AppData" / "LocalLow" / "DefaultCompany" / "Simulador" / "simulaciones.db")
 
 def get_connection():
     """
