@@ -43,6 +43,28 @@
 
         </section>
 
+        <!-- nuevo bloque para tiempos de reacci'on-->
+         <section class="reaccion">
+
+            <h2>Tiempo de reacción (pelota)</h2>
+
+            {% if tiempos_reaccion %}
+                {% for r in tiempos_reaccion %}
+                <p>
+                    <strong>Pelota {{ r["pelota"] }}:</strong>
+                    {% if r["excedido"] %}
+                        Tiempo de reacción excedido
+                    {% else %}
+                        {{ "%.2f"|format(r["tiempo_reaccion"]) }} s
+                    {% endif %}
+                </p>
+                {% endfor %}
+            {% else %}
+                <p>Sin eventos de pelota registrados.</p>
+            {% endif %}
+
+        </section>
+
         <section>
 
             <h2>Gráficas</h2>

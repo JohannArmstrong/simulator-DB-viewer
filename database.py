@@ -261,3 +261,52 @@ def obtener_simulacion(simulacion_id):
         return cursor.fetchone()
     finally:
         connection.close()
+
+# IDs de la tabla `evento` (definidos en DatabaseManager.cs)
+EVENTO_LANZAMIENTO_PELOTA = 1
+EVENTO_FRENO_PELOTA = 2
+EVENTO_REACCION_EXCEDIDA = 3
+
+
+def obtener_tiempos_reaccion(simulacion_id):
+    """
+    Devuelve el tiempo de reacción de cada aparición de la pelota.
+
+    Cada "Lanzamiento pelota" se empareja con el evento que le sigue
+    ("Freno pelota" o "Tiempo de reacción excedido") y se calcula la diferencia.
+    Resultado: [{"pelota": 1, "tiempo_reaccion": 0.84, "excedido": False}, ...]
+    """
+    connection = get_connection()
+    try:
+        try:
+            filas = connection.execute("""
+                SELECT evento_id, tiempo
+                FROM evento_simulacion
+                WHERE simulacion_id = ?
+                  AND evento_id IN (?, ?, ?)
+                ORDER BY id
+            """, (simulacion_id,
+                  EVENTO_LANZAMIENTO_PELOTA,
+                  EVENTO_FRENO_PELOTA,
+                  EVENTO_REACCION_EXCEDIDA)).fetchall()
+        except sqlite3.OperationalError:
+            # Base antigua que todavía no tiene la tabla evento_simulacion
+            return []
+
+        resultados = []
+        lanzamiento = None
+
+        for fila in filas:
+            if fila["evento_id"] == EVENTO_LANZAMIENTO_PELOTA:
+                lanzamiento = fila["tiempo"]
+            elif lanzamiento is not None:
+                resultados.append({
+                    "pelota": len(resultados) + 1,
+                    "tiempo_reaccion": round(fila["tiempo"] - lanzamiento, 2),
+                    "excedido": fila["evento_id"] == EVENTO_REACCION_EXCEDIDA
+                })
+                lanzamiento = None
+
+        return resultados
+    finally:
+        connection.close()

@@ -10,6 +10,7 @@ from database import (
     get_connection,
     obtener_simulaciones,
     obtener_simulacion,
+    obtener_tiempos_reaccion,
     obtener_simulaciones_datatables,
     obtener_promedios,
     obtener_modos_transmision,
@@ -196,8 +197,11 @@ def ver_simulacion(simulacion_id):
     if simulacion is None:
         abort(404)
 
-    return render_template("simulacion.html", simulacion=simulacion)
-
+    return render_template(
+            "simulacion.html",
+            simulacion=simulacion,
+            tiempos_reaccion=obtener_tiempos_reaccion(simulacion_id)
+        )
 
 def read_csharp_string(f):
     count = 0
